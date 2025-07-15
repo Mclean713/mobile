@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "AdminPanel",
+			"path": "../../../AdminPanel"
+		},
+		{
+			"name": "Bus-reservation-app",
+			"path": "../.."
+		}
+	],
+	"settings": {}
+}
