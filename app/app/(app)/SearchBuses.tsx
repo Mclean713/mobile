@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { View, Text, TextInput, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import axiosInstance from '@/config/axiosConfig';
+import { useSession } from '@/context/AuthContext';
 
 interface Bus {
   id: string;
@@ -21,6 +22,7 @@ interface SearchParams {
 }
 
 const SearchBuses: React.FC = () => {
+  
   const params = useLocalSearchParams<SearchParams>();
   const { origin, destination, date } = params;
   const router = useRouter();
@@ -37,12 +39,13 @@ const SearchBuses: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      const response = await axiosInstance.get('/buses', {
+      const response = await axiosInstance.get('/api/buses', {
         params: {
           origin,
           destination,
           date
-        }
+        },
+       
       });
 
       setBuses(response.data);
@@ -84,22 +87,16 @@ const SearchBuses: React.FC = () => {
   };
 
   const handleSelect = (busId: string): void => {
+
     const selectedBus = buses.find(bus => bus.id === busId);
+
+
+
     if (!selectedBus) return;
 
     router.push({
       pathname: '/SelectSeats',
-      params: {
-        busId,
-        origin: origin.toString(),
-        destination: destination.toString(),
-        date: date.toString(),
-        busName: selectedBus.name,
-        busTime: selectedBus.time,
-        busPrice: selectedBus.price.toString(),
-        availableSeats: selectedBus.availableSeats?.toString() || '0',
-      },
-    });
+      params: { numberValue: '14' } });
   };
 
   if (loading && !refreshing) {

@@ -1,46 +1,58 @@
+import React, { useState } from "react";
+import { SafeAreaView, View, Text, Pressable, TouchableOpacity } from "react-native";
 
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-
-const PaymentScreen = () => {
-  const [cardNumber, setCardNumber] = useState('');
-
-  const handlePayment = () => {
-    if (!cardNumber) {
-      Alert.alert('Missing Information', 'Please fill in all fields.');
-      return;
-    }
-
-   
-    Alert.alert('Payment Successful', 'Your booking has been confirmed!');
-  };
-
-  return (
-    <View className="flex-1 bg-white p-6">
-      <Text className="text-2xl font-bold text-center mb-8">Payment Details</Text>
-
-      <View className="mb-4">
-        <Text className="text-gray-700 mb-1">Card Number</Text>
-        <TextInput
-          value={cardNumber}
-          onChangeText={setCardNumber}
-          keyboardType="numeric"
-          maxLength={16}
-          placeholder="1234 5678 9012 3456"
-          className="border border-gray-300 rounded px-4 py-3 text-base"
-        />
-      </View>
-
-     
-
-      <TouchableOpacity
-        onPress={handlePayment}
-        className="bg-blue-600 py-4 rounded-lg mt-6 items-center"
-      >
-        <Text className="text-white text-base font-semibold">Pay Now</Text>
-      </TouchableOpacity>
-    </View>
-  );
+type PaymentMethod = {
+  id: string;
+  label: string;
+  icon: React.ReactNode; 
 };
 
-export default PaymentScreen;
+const paymentMethods: PaymentMethod[] = [
+  { id: "card", label: "Credit/Debit Card", icon: <Text>💳</Text> },
+  { id: "paypal", label: "Airtel Money", icon: <Text>🅿️</Text> },
+  { id: "applepay", label: "TMN", icon: <Text>🍎</Text> },
+];
+
+export default function PaymentMethodScreen() {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  return (
+    <SafeAreaView className="flex-1 bg-white px-6 pt-8">
+      <Text className="text-2xl font-bold mb-6">Choose Payment Method</Text>
+
+      <View className="space-y-4 flex-1">
+        {paymentMethods.map(({ id, label, icon }) => {
+          const isSelected = selectedId === id;
+          return (
+            <Pressable
+              key={id}
+              className={`flex-row items-center p-4 rounded-lg border ${
+                isSelected ? "border-blue-600 bg-blue-100" : "border-gray-300"
+              }`}
+              onPress={() => setSelectedId(id)}
+            >
+              <View className="mr-4">{icon}</View>
+              <Text className="text-lg">{label}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+
+      <TouchableOpacity
+        disabled={!selectedId}
+        className={`py-4 rounded-lg mb-4 ${
+          selectedId ? "bg-blue-600" : "bg-gray-400"
+        }`}
+        onPress={() => {
+          if (selectedId) {
+            alert(`You selected: ${selectedId}`);
+          }
+        }}
+      >
+        <Text className="text-center text-white text-lg font-semibold">
+          Continue
+        </Text>
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
+}

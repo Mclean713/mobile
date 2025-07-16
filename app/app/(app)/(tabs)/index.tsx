@@ -6,15 +6,17 @@ import RouteCard from '../../../components/core/RouteCard';
 import TripCard from '../../../components/core/TripCard';
 import { router } from 'expo-router';
 import AppLoyOut from '../_layout';
+import { useSession } from '@/context/AuthContext';
 
 const BusReservationSystem = () => {
+  const { user } = useSession();
   return (
     <View className="flex-1 bg-gray-100">
       <StatusBar style="dark" />
       
    
       <View className="bg-blue-600 p-4">
-        <Text className="text-white text-2xl font-bold mt-4">Welcome</Text>
+        <Text className="text-white text-2xl font-bold mt-4">Welcome, {user?.name}</Text>
       </View>
 
 
@@ -28,7 +30,7 @@ const BusReservationSystem = () => {
               title="Book a bus" 
               desc="Find and book your next bus journey" 
               icon="🚌"
-              onPress={() => router.push('../SearchBuses')}
+              onPress={() => router.push('/SearchBuses')}
             />
             <ActionCard 
               title="My Tickets" 

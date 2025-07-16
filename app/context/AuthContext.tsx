@@ -1,4 +1,5 @@
 import { useContext, createContext, type PropsWithChildren, useEffect} from "react";
+import * as SecureStore from 'expo-secure-store';
 import { useStorageState } from "@/hooks/useStorageState";
 import { router, Router } from "expo-router";
 import axios from "axios";
@@ -66,7 +67,7 @@ export function SessionProvider({children}: PropsWithChildren){
          try{
      
 
-               const respose = await axiosInstance.post('/api/user',null ,{
+               const respose = await axiosInstance.get('api/user',{
                     headers: {
                         'Authorization' : `Bearer ${session}`
                     }
@@ -110,13 +111,22 @@ export function SessionProvider({children}: PropsWithChildren){
         }
     }
     const handleSignIn = async(token: string, userData: user)=>{
-        try{
-           await setSession(token);
-           await setUser(JSON.stringify(userData));
-        }catch(error){
-             console.error('failed to sign in : ', error);
-             throw error
+            
+        try {
+            console.log('handleSignIn called with token:', token);
+            
+            await setSession(token);
+            await setUser(JSON.stringify(userData));
+
+            await SecureStore.setItemAsync('session', token);
+            console.log('Token saved to SecureStore:', token);
+
+        } catch (error) {
+            console.error('failed to sign in : ', error);
+            throw error;
         }
+
+
     }
     return(
         <AuthContext.Provider value={{

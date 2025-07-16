@@ -8,22 +8,24 @@ const axiosInstance = axios.create({
         'Content-Type': 'application/json',
         'Accept' : 'application/json'
        },
-       withCredentials: false,
+       withCredentials: true,
 
 
 });
 axiosInstance.interceptors.request.use(
-    async(config)=>{
-
-        const token = await SecureStore.getItemAsync('session');
-        if(token){
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config
-    },(error)=>{
-        return Promise.reject(error)
-    }
+   
+            async (config) => {
+                console.log('Interceptor fired');
+                const token = await SecureStore.getItemAsync('session');
+                console.log('Token from SecureStore:', token); 
+                if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+                }
+                return config;
+            },
+            (error) => Promise.reject(error)
+);
     
-)
+
 
 export default axiosInstance
